@@ -40,3 +40,12 @@ Thumbs.db
 .idea/tasks.xml
 .idea/datasources.xml
 .idea/dataSources.ids
+
+# Ignore bundler config
+/.bundle
+# Ignore the Gemfile.lock
+/Gemfile.lock
+# Ignore Fastlane logs
+/fastlane/report.xml
+/fastlane/Preview.html
+/fastlane/screenshots

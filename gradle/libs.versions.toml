@@ -16,7 +16,7 @@ navigation = "2.8.5"
 viewmodel = "2.6.0"
 retrofit = "2.11.0"
 interceptor = "4.12.0"
-room = "2.6.1"
+room = "2.6.0"
 splash = "1.0.1"
 
 [libraries]
@@ -39,8 +39,9 @@ squareup-retrofit = { group = "com.squareup.retrofit2", name = "retrofit", versi
 squareup-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
 logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "interceptor" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-paging = { group = "androidx.room", name = "room-paging", version.ref = "room" }
-room-complier = { group = "androidx.room", name = "room-complier", version.ref = "room" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 core-splash = { group = "androidx.core", name = "core-splashscreen", version.ref = "splash" }
 
 [plugins]

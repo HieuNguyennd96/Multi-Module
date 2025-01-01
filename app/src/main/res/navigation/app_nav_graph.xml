@@ -11,7 +11,7 @@
         android:label="LoginFragment"
         tools:layout="@layout/fragment_login">
 
-        <deepLink app:uri="vchecking://app/login" />
+        <deepLink app:uri="app://app/login" />
 
     </fragment>
 

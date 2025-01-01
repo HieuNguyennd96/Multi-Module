@@ -6,11 +6,11 @@ plugins {
 }
 
 android {
-    namespace = "com.viettel.vht.vchecking"
+    namespace = "com.hieunt.demo.multimodule"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.viettel.vht.vchecking"
+        applicationId = "com.hieunt.demo.multimodule"
         minSdk = 26
         targetSdk = 34
         versionCode = 1

@@ -1,0 +1,160 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+default_platform(:android)
+
+platform :android do
+
+  before_all do |lane|
+    # This block is called before running all lane
+    gradle(task: "--stop")
+    puts "Starting all lanes"
+  end
+
+  after_all do |lane|
+   puts "Finished all lanes"
+  end
+
+  after_each do |lane|
+    puts "Executed #{lane} successfully"
+  end
+
+  before_each do |lane|
+    # This block is called before running each lane
+    puts "Starting #{lane}"
+  end
+
+  desc "Runs all the tests"
+  lane :test do
+    gradle(task: "test")
+  end
+
+  desc "Update version"
+  lane :updateVersion do |options|
+    gradle_file = "../app/build.gradle.kts"
+    new_version_name = options[:version_name]
+    change_version_name(build_gradle_path: gradle_file, version_name: new_version_name)
+    new_version_code = increase_version_code(build_gradle_path: gradle_file)
+    sync_gradle
+
+    add_git_tag(
+      tag: new_version_name,
+      prefix: "v",
+      force: true,
+      build_number: new_version_code
+    )
+
+    push_git_tags
+
+    puts "Created and pushed Git tag: v#{new_version_name}"
+  end
+
+  desc "Change version name"
+  lane :change_version_name do |options|
+    build_gradle_path = options[:build_gradle_path]
+    version_name = options[:version_name]
+
+    content = File.read(build_gradle_path)
+    updated_content = content.gsub(/versionName\s*=\s*".*?"/, "versionName = \"#{version_name}\"")
+    File.open(build_gradle_path, "w") { |file| file.puts updated_content }
+    puts "VersionName updated to #{version_name}"
+  end
+
+  lane :get_version_code do |options|
+    build_gradle_path = options[:build_gradle_path]
+    content = File.read(build_gradle_path)
+    version = content.match(/versionCode\s*=\s*(\d+)/)[1]
+    puts "Current versionCode: #{version}"
+    version.to_i
+  end
+
+  lane :get_version_name do |options|
+#     build_gradle_path = options[:build_gradle_path]
+    build_gradle_path = "../app/build.gradle.kts"
+    content = File.read(build_gradle_path)
+    version_name = content.match(/versionName\s*=\s*".*?"/)[1]
+    puts "Current versionName: #{version_name}"
+  end
+
+  desc "increase_version_code"
+  lane :increase_version_code do |options|
+    build_gradle_path = options[:build_gradle_path]
+    version_code = get_version_code(build_gradle_path: build_gradle_path)
+    new_version_code = version_code + 1
+
+    content = File.read(build_gradle_path)
+    updated_content = content.gsub(/versionCode\s*=\s*\d+/, "versionCode = #{new_version_code}")
+    File.open(build_gradle_path, "w") { |file| file.puts updated_content }
+    puts "VersionCode updated to #{new_version_code}"
+    new_version_code
+  end
+
+  desc "Sync project with gradle files"
+  lane :sync_gradle do
+    gradle(task: "clean build --refresh-dependencies")
+  end
+
+  desc "BuildApk devDebug"
+  lane :buildApkDevDebug do |options|
+    if options[:version]
+      updateVersion(version: options[:version])
+    end
+    gradle(task: "assembleDevDebug")
+  end
+
+   desc "BuildApk devRelease"
+   lane :buildApkDevRelease do |options|
+     if options[:version]
+       updateVersion(version: options[:version])
+     end
+     gradle(task: "assembleDevRelease")
+   end
+
+   desc "BuildApk stagingDebug"
+   lane :buildApkStagingDebug do |options|
+     if options[:version]
+       updateVersion(version: options[:version])
+     end
+     gradle(task: "assembleStagingDebug")
+   end
+
+   desc "BuildApk stagingRelease"
+   lane :buildApkStagingRelease do |options|
+      if options[:version]
+        updateVersion(version: options[:version])
+      end
+      gradle(task: "assembleStagingRelease")
+   end
+
+   desc "BuildApk productDebug"
+   lane :buildApkProductDebug do |options|
+     if options[:version]
+       updateVersion(version: options[:version])
+     end
+     gradle(task: "assembleProductDebug")
+   end
+
+   desc "BuildApk productRelease"
+   lane :buildApkProductRelease do |options|
+     if options[:version]
+       updateVersion(version: options[:version])
+     end
+     gradle(task: "assembleProductRelease")
+   end
+
+   desc "Build AppRelease"
+   lane :buildAppStoreApk do |options|
+      buildProductRelease
+   end
+end

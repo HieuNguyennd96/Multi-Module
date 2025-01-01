@@ -7,6 +7,7 @@ pluginManagement {
                 includeGroupByRegex("androidx.*")
             }
         }
+        google()
         mavenCentral()
         gradlePluginPortal()
     }
@@ -19,7 +20,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "vchecking-android"
+rootProject.name = "multiple-module-android"
 include(":app")
 include(":data:user")
 include(":features:login")
